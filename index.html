@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>MbisX | Autonomous Data Governance & Hybrid Endpoint Intelligence</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Plus Jakarta Sans, Inter, and JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        mbisBlue: '#0066CC',
+                        mbisTeal: '#00B894',
+                        slateDark: '#0F172A',
+                        slateLight: '#F8FAFC',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        /* Hide scrollbars cleanly for horizontal touch pill bars */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        /* Touch-friendly range slider thumb (min 24px-28px visual, 44px tap area) */
+        input[type="range"].mbis-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 28px;
+            background: transparent;
+            cursor: pointer;
+        }
+        input[type="range"].mbis-slider::-webkit-slider-runnable-track {
+            height: 8px;
+            border-radius: 9999px;
+            background: #E2E8F0;
+        }
+        input[type="range"].mbis-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 24px;
+            width: 24px;
+            border-radius: 9999px;
+            background: linear-gradient(135deg, #0066CC, #00B894);
+            border: 3px solid #FFFFFF;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.25);
+            margin-top: -8px;
+        }
+        input[type="range"].mbis-slider::-moz-range-track {
+            height: 8px;
+            border-radius: 9999px;
+            background: #E2E8F0;
+        }
+        input[type="range"].mbis-slider::-moz-range-thumb {
+            height: 24px;
+            width: 24px;
+            border-radius: 9999px;
+            background: linear-gradient(135deg, #0066CC, #00B894);
+            border: 3px solid #FFFFFF;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.25);
+        }
+    </style>
+</head>
+<body class="bg-[#F8FAFC] text-[#0F172A] font-sans antialiased selection:bg-[#0066CC] selection:text-white overflow-x-hidden">
+
+    <!-- Background Mesh SVG Overlay for Hero -->
+    <div class="fixed inset-0 pointer-events-none z-0 opacity-[0.035]" aria-hidden="true">
+        <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <pattern id="grid-mesh" width="60" height="60" patternUnits="userSpaceOnUse">
+                    <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#0F172A" stroke-width="1"/>
+                    <circle cx="0" cy="0" r="2" fill="#0066CC"/>
+                    <circle cx="60" cy="60" r="2" fill="#00B894"/>
+                </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid-mesh)" />
+        </svg>
+    </div>
+
+    <!-- Sticky Glassmorphic Top Navbar -->
+    <header class="sticky top-0 z-40 w-full backdrop-blur-md bg-[#F8FAFC]/90 border-b border-slate-200/80 transition-all">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2">
+            <!-- MbisX Brand Wordmark -->
+            <a href="#" class="flex items-center gap-2 group focus:outline-none min-h-[44px]">
+                <span class="font-display font-extrabold text-2xl sm:text-3xl tracking-tight bg-gradient-to-r from-[#0066CC] to-[#00B894] bg-clip-text text-transparent select-none">
+                    MbisX
+                </span>
+                <span class="hidden sm:inline-block font-mono text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full bg-slate-900/5 text-slate-600 border border-slate-200">
+                    v4.8 ENT
+                </span>
+            </a>
+
+            <!-- Desktop Navigation (shown on lg: 1024px+ so iPad portrait uses clean drawer) -->
+            <nav class="hidden lg:flex items-center space-x-8 text-sm font-medium text-slate-600">
+                <a href="#platform" class="hover:text-[#0066CC] transition-colors py-2">Platform</a>
+                <a href="#solutions" class="hover:text-[#0066CC] transition-colors py-2">Solutions</a>
+                <a href="#architecture" class="hover:text-[#0066CC] transition-colors py-2">Architecture</a>
+                <a href="#estimator" class="hover:text-[#0066CC] transition-colors py-2">Audit Estimator</a>
+                <a href="#footer" class="hover:text-[#0066CC] transition-colors py-2">Contact</a>
+            </nav>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <button onclick="openAuditModal('General Enterprise Inquiry')" class="inline-flex items-center justify-center min-h-[44px] px-3.5 sm:px-5 py-2.5 text-xs sm:text-sm font-semibold text-white rounded-xl bg-gradient-to-r from-[#0066CC] to-[#00B894] hover:opacity-95 shadow-sm shadow-[#0066CC]/20 transition-all active:scale-[0.98] whitespace-nowrap">
+                    <span class="sm:hidden">Schedule Audit</span>
+                    <span class="hidden sm:inline">Request Audit / Demo</span>
+                </button>
+                <!-- Mobile & iPad Drawer Toggle (44x44px minimum touch target) -->
+                <button id="mobile-menu-btn" aria-expanded="false" aria-controls="mobile-menu" class="lg:hidden min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 active:scale-95 transition-all" aria-label="Toggle Navigation Menu">
+                    <svg id="menu-icon-open" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                    <svg id="menu-icon-close" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile & iPad Slide-Down Navigation Drawer -->
+        <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-200 bg-white px-4 sm:px-6 py-4 space-y-1.5 shadow-xl">
+            <a href="#platform" class="mobile-nav-link flex items-center justify-between min-h-[44px] px-3 rounded-xl text-sm font-semibold text-slate-800 hover:bg-slate-50 hover:text-[#0066CC]">
+                <span>Platform Overview</span>
+                <span class="font-mono text-xs text-slate-400">01</span>
+            </a>
+            <a href="#solutions" class="mobile-nav-link flex items-center justify-between min-h-[44px] px-3 rounded-xl text-sm font-semibold text-slate-800 hover:bg-slate-50 hover:text-[#0066CC]">
+                <span>Enterprise Pillars &amp; Solutions</span>
+                <span class="font-mono text-xs text-slate-400">02</span>
+            </a>
+            <a href="#architecture" class="mobile-nav-link flex items-center justify-between min-h-[44px] px-3 rounded-xl text-sm font-semibold text-slate-800 hover:bg-slate-50 hover:text-[#0066CC]">
+                <span>Architecture &amp; Security Explorer</span>
+                <span class="font-mono text-xs text-slate-400">03</span>
+            </a>
+            <a href="#estimator" class="mobile-nav-link flex items-center justify-between min-h-[44px] px-3 rounded-xl text-sm font-semibold text-slate-800 hover:bg-slate-50 hover:text-[#0066CC]">
+                <span>Audit Readiness &amp; ROI Estimator</span>
+                <span class="font-mono text-xs text-slate-400">04</span>
+            </a>
+            <a href="#footer" class="mobile-nav-link flex items-center justify-between min-h-[44px] px-3 rounded-xl text-sm font-semibold text-slate-800 hover:bg-slate-50 hover:text-[#0066CC]">
+                <span>Corporate Contact &amp; Trust</span>
+                <span class="font-mono text-xs text-slate-400">05</span>
+            </a>
+            <div class="pt-3 border-t border-slate-100">
+                <button onclick="closeMobileMenu(); openAuditModal('Executive Security Briefing');" class="w-full min-h-[48px] rounded-xl bg-[#0F172A] text-white font-semibold text-sm flex items-center justify-center gap-2">
+                    <span>Schedule Executive Security Briefing</span>
+                    <span class="text-[#00B894]">→</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="relative z-10">
+
+        <!-- HERO SECTION -->
+        <section id="platform" class="pt-10 pb-16 sm:pt-14 sm:pb-20 lg:pt-24 lg:pb-28 border-b border-slate-200/80 relative overflow-hidden">
+            <!-- Subtle Geometric Node Mesh Accent (Right) -->
+            <div class="hidden lg:block absolute top-10 right-0 w-[520px] h-[520px] opacity-15 pointer-events-none">
+                <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+                    <path d="M50 120 L150 60 L280 90 L350 40 M150 60 L190 180 L280 90 M190 180 L90 250 L50 120 M190 180 L310 260 L280 90" stroke="url(#hero-grad)" stroke-width="2"/>
+                    <circle cx="50" cy="120" r="6" fill="#0066CC"/>
+                    <circle cx="150" cy="60" r="8" fill="#00B894"/>
+                    <circle cx="280" cy="90" r="6" fill="#0066CC"/>
+                    <circle cx="350" cy="40" r="7" fill="#00B894"/>
+                    <circle cx="190" cy="180" r="9" fill="#0F172A"/>
+                    <circle cx="90" cy="250" r="6" fill="#0066CC"/>
+                    <circle cx="310" cy="260" r="7" fill="#00B894"/>
+                    <defs>
+                        <linearGradient id="hero-grad" x1="0" y1="0" x2="400" y2="400" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#0066CC"/>
+                            <stop offset="1" stop-color="#00B894"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 lg:gap-12 items-center">
+                    <!-- Hero Copy -->
+                    <div class="lg:col-span-7 space-y-5 sm:space-y-6">
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-200 shadow-xs max-w-full">
+                            <span class="w-2 h-2 rounded-full bg-[#00B894] animate-pulse shrink-0"></span>
+                            <span class="font-mono text-[10px] sm:text-xs font-medium text-slate-700 tracking-wide uppercase truncate">
+                                Zero-Trust Governance &amp; Telemetry
+                            </span>
+                        </div>
+
+                        <h1 class="font-display font-extrabold text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-tight text-[#0F172A] leading-[1.12]">
+                            Autonomous Data Governance &amp; <span class="bg-gradient-to-r from-[#0066CC] to-[#00B894] bg-clip-text text-transparent">Hybrid Endpoint</span> Intelligence
+                        </h1>
+
+                        <p class="text-base sm:text-lg md:text-xl text-slate-600 max-w-2xl leading-relaxed">
+                            MbisX unifies real-time enterprise data lineage, automated SOC2/ISO security auditing, and distributed cloud/on-premises infrastructure monitoring into a single deterministic control plane.
+                        </p>
+
+                        <div class="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+                            <button onclick="openAuditModal('Platform Architecture Briefing')" class="w-full sm:w-auto min-h-[48px] px-6 sm:px-7 py-3.5 rounded-xl bg-[#0F172A] text-white font-semibold text-sm hover:bg-slate-800 transition-all shadow-md flex items-center justify-center gap-2">
+                                <span>Schedule Security Briefing</span>
+                                <svg class="w-4 h-4 text-[#00B894] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                </svg>
+                            </button>
+                            <a href="#architecture" class="w-full sm:w-auto min-h-[48px] px-6 sm:px-7 py-3.5 rounded-xl bg-white text-[#0F172A] font-semibold text-sm border border-slate-300 hover:border-[#0066CC] transition-all flex items-center justify-center">
+                                Explore Live Architecture
+                            </a>
+                        </div>
+
+                        <!-- Compliance Trust Strip -->
+                        <div class="pt-5 sm:pt-6 border-t border-slate-200/80 grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-x-6 gap-y-2.5 text-[11px] sm:text-xs font-mono text-slate-500">
+                            <span class="flex items-center gap-1.5"><span class="text-[#00B894] font-bold">✓</span> SOC 2 TYPE II CERTIFIED</span>
+                            <span class="flex items-center gap-1.5"><span class="text-[#00B894] font-bold">✓</span> ISO/IEC 27001:2022</span>
+                            <span class="flex items-center gap-1.5"><span class="text-[#00B894] font-bold">✓</span> HIPAA &amp; GDPR READY</span>
+                            <span class="flex items-center gap-1.5"><span class="text-[#00B894] font-bold">✓</span> AIR-GAPPED DEPLOY</span>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Live System Telemetry / Governance Status Widget -->
+                    <div class="lg:col-span-5 min-w-0">
+                        <div class="bg-white rounded-2xl border border-slate-200 shadow-xl shadow-slate-900/5 overflow-hidden">
+                            <!-- Terminal Header -->
+                            <div class="bg-[#0F172A] px-4 sm:px-5 py-3.5 flex items-center justify-between gap-2">
+                                <div class="flex items-center gap-1.5 sm:gap-2 min-w-0">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0"></span>
+                                    <span class="w-2.5 h-2.5 rounded-full bg-amber-400 shrink-0"></span>
+                                    <span class="w-2.5 h-2.5 rounded-full bg-[#00B894] shrink-0"></span>
+                                    <span class="ml-1.5 font-mono text-[11px] sm:text-xs text-slate-300 truncate">mbisx-control // us-east-1</span>
+                                </div>
+                                <span id="live-clock" class="font-mono text-[10px] sm:text-[11px] text-[#00B894] shrink-0">LIVE STREAM</span>
+                            </div>
+
+                            <!-- Live Telemetry Body -->
+                            <div class="p-4 sm:p-6 space-y-4 sm:space-y-5">
+                                <div class="grid grid-cols-2 gap-3 sm:gap-4">
+                                    <div class="p-3.5 sm:p-4 rounded-xl bg-slate-50 border border-slate-200/80 min-w-0">
+                                        <div class="text-[10px] sm:text-xs font-mono text-slate-500 uppercase truncate">Monitored Nodes</div>
+                                        <div id="metric-endpoints" class="mt-1 font-display font-bold text-xl sm:text-2xl text-[#0F172A]">142,890</div>
+                                        <div class="mt-1 text-[10px] sm:text-[11px] font-mono text-[#00B894] truncate">99.998% Agent Sync</div>
+                                    </div>
+                                    <div class="p-3.5 sm:p-4 rounded-xl bg-slate-50 border border-slate-200/80 min-w-0">
+                                        <div class="text-[10px] sm:text-xs font-mono text-slate-500 uppercase truncate">Policy Posture</div>
+                                        <div id="metric-compliance" class="mt-1 font-display font-bold text-xl sm:text-2xl text-[#0066CC]">99.94%</div>
+                                        <div class="mt-1 text-[10px] sm:text-[11px] font-mono text-slate-500 truncate">Zero Critical Drift</div>
+                                    </div>
+                                </div>
+
+                                <!-- Live Audit Event Stream -->
+                                <div>
+                                    <div class="flex items-center justify-between gap-2 mb-2">
+                                        <span class="text-[11px] sm:text-xs font-mono font-semibold uppercase tracking-wider text-slate-500 truncate">Governance Ledger</span>
+                                        <button onclick="triggerSimulatedAudit()" class="min-h-[36px] px-2.5 rounded-lg bg-blue-50 text-[11px] sm:text-xs font-mono text-[#0066CC] hover:bg-blue-100 font-semibold shrink-0">
+                                            + Run Scan
+                                        </button>
+                                    </div>
+                                    <div id="telemetry-log" class="bg-[#0F172A] text-slate-200 rounded-xl p-3.5 sm:p-4 font-mono text-[11px] sm:text-xs space-y-2.5 h-44 overflow-y-auto">
+                                        <div class="flex items-start justify-between gap-2 border-b border-slate-800 pb-2">
+                                            <span class="text-[#00B894] shrink-0">[PASS]</span>
+                                            <span class="flex-1 text-slate-300 break-words">PII Lineage Verified: Snowflake Prod Cluster</span>
+                                            <span class="text-slate-500 shrink-0">12ms</span>
+                                        </div>
+                                        <div class="flex items-start justify-between gap-2 border-b border-slate-800 pb-2">
+                                            <span class="text-[#00B894] shrink-0">[PASS]</span>
+                                            <span class="flex-1 text-slate-300 break-words">On-Prem BareMetal Node #418 Integrity</span>
+                                            <span class="text-slate-500 shrink-0">8ms</span>
+                                        </div>
+                                        <div class="flex items-start justify-between gap-2 border-b border-slate-800 pb-2">
+                                            <span class="text-sky-400 shrink-0">[SYNC]</span>
+                                            <span class="flex-1 text-slate-300 break-words">ISO-27001 Control A.8.24 Sealed</span>
+                                            <span class="text-slate-500 shrink-0">19ms</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CORE CAPABILITIES / SOLUTIONS GRID -->
+        <section id="solutions" class="py-16 sm:py-20 lg:py-28 bg-white border-b border-slate-200/80">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-3xl">
+                    <span class="font-mono text-xs font-semibold uppercase tracking-widest text-[#0066CC]">Core Enterprise Pillars</span>
+                    <h2 class="mt-2 font-display font-bold text-2xl sm:text-3xl md:text-4xl tracking-tight text-[#0F172A]">
+                        Built for Regulated, High-Throughput Infrastructure
+                    </h2>
+                    <p class="mt-3 sm:mt-4 text-sm sm:text-base md:text-lg text-slate-600">
+                        Swipe or tap a capability domain below to inspect technical deliverables, automated enforcement mechanisms, and enterprise outcomes.
+                    </p>
+                </div>
+
+                <!-- Touch-Friendly Horizontal Scrollable Pillar Filter Tabs on Phone, Wrapped on Tablet/Desktop -->
+                <div class="mt-8 sm:mt-10 -mx-4 px-4 sm:mx-0 sm:px-0 overflow-x-auto no-scrollbar border-b border-slate-200 pb-4 sm:pb-5" role="tablist">
+                    <div class="flex flex-nowrap sm:flex-wrap gap-2.5 min-w-max sm:min-w-0">
+                        <button onclick="selectSolutionTab(0)" id="sol-tab-0" class="sol-tab min-h-[44px] px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-[#0F172A] text-white whitespace-nowrap">
+                            01. Enterprise Data Governance
+                        </button>
+                        <button onclick="selectSolutionTab(1)" id="sol-tab-1" class="sol-tab min-h-[44px] px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200 whitespace-nowrap">
+                            02. Cybersecurity &amp; IT Audits
+                        </button>
+                        <button onclick="selectSolutionTab(2)" id="sol-tab-2" class="sol-tab min-h-[44px] px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200 whitespace-nowrap">
+                            03. Hybrid Endpoint Monitoring
+                        </button>
+                        <button onclick="selectSolutionTab(3)" id="sol-tab-3" class="sol-tab min-h-[44px] px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200 whitespace-nowrap">
+                            04. Workforce &amp; Engineering
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Active Tab Detail Spotlight -->
+                <div id="solution-spotlight" class="mt-6 sm:mt-8 bg-[#F8FAFC] rounded-2xl border border-slate-200 p-5 sm:p-8 lg:p-10 grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center">
+                    <!-- Populated via JS -->
+                </div>
+
+                <!-- 4-Card Overview Grid (1 col phone, 2 col iPad, 4 col desktop) -->
+                <div class="mt-10 sm:mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+                    <!-- Card 1 -->
+                    <div onclick="selectSolutionTab(0)" class="cursor-pointer group p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 hover:border-[#0066CC] transition-all shadow-xs hover:shadow-md flex flex-col justify-between">
+                        <div>
+                            <div class="w-11 h-11 rounded-xl bg-blue-50 text-[#0066CC] flex items-center justify-center font-mono font-bold text-sm mb-4 sm:mb-5 group-hover:bg-[#0066CC] group-hover:text-white transition-colors">
+                                DG
+                            </div>
+                            <h3 class="font-display font-bold text-base sm:text-lg text-[#0F172A]">Enterprise Data Governance</h3>
+                            <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+                                Automated schema discovery, column-level PII classification, and deterministic zero-trust access policies across data lakes.
+                            </p>
+                        </div>
+                        <div class="mt-4 pt-3.5 border-t border-slate-100 font-mono text-xs text-[#0066CC] flex items-center justify-between min-h-[36px]">
+                            <span>LINEAGE &amp; POLICY</span>
+                            <span>→</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div onclick="selectSolutionTab(1)" class="cursor-pointer group p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 hover:border-[#00B894] transition-all shadow-xs hover:shadow-md flex flex-col justify-between">
+                        <div>
+                            <div class="w-11 h-11 rounded-xl bg-teal-50 text-[#00B894] flex items-center justify-center font-mono font-bold text-sm mb-4 sm:mb-5 group-hover:bg-[#00B894] group-hover:text-white transition-colors">
+                                SA
+                            </div>
+                            <h3 class="font-display font-bold text-base sm:text-lg text-[#0F172A]">Cybersecurity &amp; IT Security Audits</h3>
+                            <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+                                Continuous compliance posture verification, attack-surface reduction, and cryptographic evidence generation for SOC2 &amp; ISO.
+                            </p>
+                        </div>
+                        <div class="mt-4 pt-3.5 border-t border-slate-100 font-mono text-xs text-[#00B894] flex items-center justify-between min-h-[36px]">
+                            <span>CONTINUOUS AUDIT</span>
+                            <span>→</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div onclick="selectSolutionTab(2)" class="cursor-pointer group p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 hover:border-[#0066CC] transition-all shadow-xs hover:shadow-md flex flex-col justify-between">
+                        <div>
+                            <div class="w-11 h-11 rounded-xl bg-blue-50 text-[#0066CC] flex items-center justify-center font-mono font-bold text-sm mb-4 sm:mb-5 group-hover:bg-[#0066CC] group-hover:text-white transition-colors">
+                                HM
+                            </div>
+                            <h3 class="font-display font-bold text-base sm:text-lg text-[#0F172A]">Hybrid Cloud &amp; On-Prem Monitoring</h3>
+                            <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+                                Sub-second eBPF telemetry across multi-cloud Kubernetes clusters, bare-metal data centers, and mission-critical databases.
+                            </p>
+                        </div>
+                        <div class="mt-4 pt-3.5 border-t border-slate-100 font-mono text-xs text-[#0066CC] flex items-center justify-between min-h-[36px]">
+                            <span>UNIFIED OBSERVABILITY</span>
+                            <span>→</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 4 -->
+                    <div onclick="selectSolutionTab(3)" class="cursor-pointer group p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 hover:border-[#00B894] transition-all shadow-xs hover:shadow-md flex flex-col justify-between">
+                        <div>
+                            <div class="w-11 h-11 rounded-xl bg-teal-50 text-[#00B894] flex items-center justify-center font-mono font-bold text-sm mb-4 sm:mb-5 group-hover:bg-[#00B894] group-hover:text-white transition-colors">
+                                WS
+                            </div>
+                            <h3 class="font-display font-bold text-base sm:text-lg text-[#0F172A]">Workforce &amp; Engineering Solutions</h3>
+                            <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+                                Security-cleared principal architects, DevSecOps squads, and turnkey governance implementation teams embedded on demand.
+                            </p>
+                        </div>
+                        <div class="mt-4 pt-3.5 border-t border-slate-100 font-mono text-xs text-[#00B894] flex items-center justify-between min-h-[36px]">
+                            <span>PRINCIPAL DELIVERY</span>
+                            <span>→</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- INTERACTIVE ARCHITECTURE & SECURITY POSTURE EXPLORER -->
+        <section id="architecture" class="py-16 sm:py-20 lg:py-28 bg-[#0F172A] text-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+                    <div>
+                        <span class="font-mono text-xs font-semibold uppercase tracking-widest text-[#00B894]">Interactive Topology Simulator</span>
+                        <h2 class="mt-2 font-display font-bold text-2xl sm:text-3xl md:text-4xl tracking-tight text-white">
+                            Architecture &amp; Security Posture Explorer
+                        </h2>
+                        <p class="mt-3 text-slate-400 max-w-2xl text-sm sm:text-base">
+                            Toggle between deployment layers to inspect how MbisX enforces zero-trust boundaries, low-latency telemetry ingestion, and cryptographic audit trails.
+                        </p>
+                    </div>
+
+                    <!-- Responsive Layer Switcher Controls (Grid on Phone, Inline on Tablet/Desktop) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 lg:inline-flex gap-1.5 p-1.5 rounded-xl bg-slate-800/90 border border-slate-700 w-full lg:w-auto">
+                        <button onclick="setArchLayer('hybrid')" id="arch-btn-hybrid" class="arch-btn min-h-[44px] px-4 py-2.5 rounded-lg text-xs font-mono font-semibold uppercase transition-all bg-gradient-to-r from-[#0066CC] to-[#00B894] text-white">
+                            Hybrid Cloud
+                        </button>
+                        <button onclick="setArchLayer('onprem')" id="arch-btn-onprem" class="arch-btn min-h-[44px] px-4 py-2.5 rounded-lg text-xs font-mono font-semibold uppercase transition-all text-slate-300 hover:text-white">
+                            On-Premises
+                        </button>
+                        <button onclick="setArchLayer('zerotrust')" id="arch-btn-zerotrust" class="arch-btn min-h-[44px] px-4 py-2.5 rounded-lg text-xs font-mono font-semibold uppercase transition-all text-slate-300 hover:text-white">
+                            Zero-Trust Governance
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Interactive Diagram & Telemetry Inspector -->
+                <div class="mt-8 sm:mt-12 grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-stretch">
+                    <!-- Visual Topology Canvas -->
+                    <div class="lg:col-span-7 bg-slate-900/90 border border-slate-800 rounded-2xl p-5 sm:p-8 flex flex-col justify-between relative overflow-hidden">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-4">
+                            <span id="arch-diagram-title" class="font-mono text-[11px] sm:text-xs uppercase tracking-wider text-[#00B894]">
+                                TOPOLOGY: MULTI-CLOUD &amp; KUBERNETES MESH
+                            </span>
+                            <span class="font-mono text-[11px] sm:text-xs text-slate-400">mTLS 1.3 ENFORCED</span>
+                        </div>
+
+                        <!-- Node Flow Diagram (1 col phone, 3 col iPad/desktop) -->
+                        <div id="arch-nodes-container" class="my-6 sm:my-8 grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4 items-center">
+                            <!-- Populated via JS -->
+                        </div>
+
+                        <!-- Bottom Bus Bar -->
+                        <div class="bg-slate-950 border border-slate-800 rounded-xl p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 font-mono text-[11px] sm:text-xs">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-[#00B894] shrink-0"></span>
+                                <span class="text-slate-300">MbisX Immutable Audit Ledger</span>
+                            </div>
+                            <span id="arch-throughput" class="text-[#00B894]">1.4M events/sec • 0% packet loss</span>
+                        </div>
+                    </div>
+
+                    <!-- Live Layer Metrics & Compliance Checks -->
+                    <div class="lg:col-span-5 bg-slate-900/90 border border-slate-800 rounded-2xl p-5 sm:p-8 flex flex-col justify-between space-y-6">
+                        <div>
+                            <h3 id="arch-inspector-heading" class="font-display font-bold text-lg sm:text-xl text-white">
+                                Hybrid Cloud Telemetry &amp; Control
+                            </h3>
+                            <p id="arch-inspector-desc" class="mt-2 text-sm text-slate-400 leading-relaxed">
+                                Seamless cross-account visibility across AWS, Azure, and GCP workloads without exposing internal VPCs to public ingress.
+                            </p>
+
+                            <!-- Real-time Metric Bars -->
+                            <div class="mt-5 sm:mt-6 grid grid-cols-3 gap-2.5 sm:gap-3">
+                                <div class="p-2.5 sm:p-3 rounded-xl bg-slate-950 border border-slate-800">
+                                    <div class="font-mono text-[9px] sm:text-[10px] text-slate-400 uppercase truncate">P99 Latency</div>
+                                    <div id="arch-stat-latency" class="mt-1 font-mono font-bold text-base sm:text-lg text-[#00B894]">1.8 ms</div>
+                                </div>
+                                <div class="p-2.5 sm:p-3 rounded-xl bg-slate-950 border border-slate-800">
+                                    <div class="font-mono text-[9px] sm:text-[10px] text-slate-400 uppercase truncate">CPU Overhead</div>
+                                    <div id="arch-stat-cpu" class="mt-1 font-mono font-bold text-base sm:text-lg text-sky-400">&lt; 0.6%</div>
+                                </div>
+                                <div class="p-2.5 sm:p-3 rounded-xl bg-slate-950 border border-slate-800">
+                                    <div class="font-mono text-[9px] sm:text-[10px] text-slate-400 uppercase truncate">Audit Score</div>
+                                    <div id="arch-stat-score" class="mt-1 font-mono font-bold text-base sm:text-lg text-white">100/100</div>
+                                </div>
+                            </div>
+
+                            <!-- Active Controls Checklist -->
+                            <div class="mt-5 sm:mt-6 space-y-2.5" id="arch-checks-list">
+                                <!-- Populated via JS -->
+                            </div>
+                        </div>
+
+                        <button onclick="openAuditModal('Custom Architecture Blueprint')" class="w-full min-h-[48px] py-3 rounded-xl bg-white text-[#0F172A] font-semibold text-sm hover:bg-slate-100 transition-colors">
+                            Export Reference Architecture PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- INTERACTIVE SECURITY AUDIT READINESS ESTIMATOR / ROI CALCULATOR -->
+        <section id="estimator" class="py-16 sm:py-20 lg:py-28 bg-[#F8FAFC]">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-3xl">
+                    <span class="font-mono text-xs font-semibold uppercase tracking-widest text-[#0066CC]">Executive Value Modeling</span>
+                    <h2 class="mt-2 font-display font-bold text-2xl sm:text-3xl md:text-4xl tracking-tight text-[#0F172A]">
+                        Security Audit Readiness &amp; ROI Estimator
+                    </h2>
+                    <p class="mt-3 text-sm sm:text-base md:text-lg text-slate-600">
+                        Configure your infrastructure footprint and regulatory scope to model engineering hours reclaimed and audit preparation acceleration.
+                    </p>
+                </div>
+
+                <div class="mt-8 sm:mt-12 bg-white rounded-2xl border border-slate-200 shadow-lg shadow-slate-900/5 p-5 sm:p-8 lg:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+                    <!-- Inputs Column -->
+                    <div class="lg:col-span-6 space-y-6 sm:space-y-8">
+                        <!-- Endpoint Slider -->
+                        <div>
+                            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                                <label for="endpoint-slider" class="font-semibold text-sm text-[#0F172A]">
+                                    Managed Endpoints &amp; Database Nodes
+                                </label>
+                                <span id="endpoint-count-display" class="font-mono font-bold text-sm sm:text-base text-[#0066CC] bg-blue-50 px-3 py-1 rounded-lg">
+                                    5,000 Nodes
+                                </span>
+                            </div>
+                            <input id="endpoint-slider" type="range" min="500" max="50000" step="500" value="5000" class="mbis-slider w-full">
+                            <div class="flex justify-between font-mono text-[11px] text-slate-400 mt-1">
+                                <span>500</span>
+                                <span>15,000</span>
+                                <span>30,000</span>
+                                <span>50,000+</span>
+                            </div>
+                        </div>
+
+                        <!-- Compliance Frameworks Multi-Select (min 48px touch targets) -->
+                        <div>
+                            <label class="block font-semibold text-sm text-[#0F172A] mb-3">
+                                Active Compliance &amp; Audit Frameworks
+                            </label>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3">
+                                <label class="cursor-pointer flex items-center gap-2.5 min-h-[48px] px-3 py-2.5 rounded-xl border border-slate-200 hover:border-[#0066CC] bg-slate-50/60 select-none">
+                                    <input type="checkbox" value="1.25" checked onchange="calculateROI()" class="framework-cb w-5 h-5 accent-[#0066CC] rounded shrink-0">
+                                    <span class="font-mono text-xs font-semibold text-slate-800">SOC 2 Type II</span>
+                                </label>
+                                <label class="cursor-pointer flex items-center gap-2.5 min-h-[48px] px-3 py-2.5 rounded-xl border border-slate-200 hover:border-[#0066CC] bg-slate-50/60 select-none">
+                                    <input type="checkbox" value="1.30" checked onchange="calculateROI()" class="framework-cb w-5 h-5 accent-[#0066CC] rounded shrink-0">
+                                    <span class="font-mono text-xs font-semibold text-slate-800">ISO 27001</span>
+                                </label>
+                                <label class="cursor-pointer flex items-center gap-2.5 min-h-[48px] px-3 py-2.5 rounded-xl border border-slate-200 hover:border-[#0066CC] bg-slate-50/60 select-none">
+                                    <input type="checkbox" value="1.20" onchange="calculateROI()" class="framework-cb w-5 h-5 accent-[#0066CC] rounded shrink-0">
+                                    <span class="font-mono text-xs font-semibold text-slate-800">HIPAA / HITRUST</span>
+                                </label>
+                                <label class="cursor-pointer flex items-center gap-2.5 min-h-[48px] px-3 py-2.5 rounded-xl border border-slate-200 hover:border-[#0066CC] bg-slate-50/60 select-none">
+                                    <input type="checkbox" value="1.15" onchange="calculateROI()" class="framework-cb w-5 h-5 accent-[#0066CC] rounded shrink-0">
+                                    <span class="font-mono text-xs font-semibold text-slate-800">GDPR / DPDP</span>
+                                </label>
+                                <label class="cursor-pointer flex items-center gap-2.5 min-h-[48px] px-3 py-2.5 rounded-xl border border-slate-200 hover:border-[#0066CC] bg-slate-50/60 select-none">
+                                    <input type="checkbox" value="1.35" onchange="calculateROI()" class="framework-cb w-5 h-5 accent-[#0066CC] rounded shrink-0">
+                                    <span class="font-mono text-xs font-semibold text-slate-800">PCI-DSS 4.0</span>
+                                </label>
+                                <label class="cursor-pointer flex items-center gap-2.5 min-h-[48px] px-3 py-2.5 rounded-xl border border-slate-200 hover:border-[#0066CC] bg-slate-50/60 select-none">
+                                    <input type="checkbox" value="1.40" onchange="calculateROI()" class="framework-cb w-5 h-5 accent-[#0066CC] rounded shrink-0">
+                                    <span class="font-mono text-xs font-semibold text-slate-800">FedRAMP / NIST</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Deployment Environment Toggle -->
+                        <div>
+                            <label class="block font-semibold text-sm text-[#0F172A] mb-3">
+                                Deployment Topology
+                            </label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button type="button" onclick="setRoiEnv(1.0, this)" class="roi-env-btn min-h-[44px] px-2.5 py-2 rounded-xl border border-[#0066CC] bg-blue-50 text-[#0066CC] font-mono text-xs font-semibold">
+                                    Multi-Cloud
+                                </button>
+                                <button type="button" onclick="setRoiEnv(1.18, this)" class="roi-env-btn min-h-[44px] px-2.5 py-2 rounded-xl border border-slate-200 bg-white text-slate-700 font-mono text-xs font-semibold hover:border-slate-300">
+                                    Hybrid Core
+                                </button>
+                                <button type="button" onclick="setRoiEnv(1.32, this)" class="roi-env-btn min-h-[44px] px-2.5 py-2 rounded-xl border border-slate-200 bg-white text-slate-700 font-mono text-xs font-semibold hover:border-slate-300">
+                                    Air-Gapped
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Output Summary Card -->
+                    <div class="lg:col-span-6 bg-[#0F172A] text-white rounded-2xl p-5 sm:p-8 space-y-6">
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-4">
+                            <span class="font-mono text-xs uppercase tracking-wider text-slate-400">Projected Annual Impact</span>
+                            <span class="font-mono text-[11px] px-2.5 py-1 rounded-md bg-[#00B894]/15 text-[#00B894]">VERIFIED BENCHMARK</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
+                            <div>
+                                <div class="text-xs font-mono text-slate-400 uppercase">Audit Prep Time Saved</div>
+                                <div id="roi-hours" class="mt-1 font-display font-extrabold text-3xl sm:text-4xl bg-gradient-to-r from-[#0066CC] to-[#00B894] bg-clip-text text-transparent">
+                                    1,840 hrs/yr
+                                </div>
+                                <div class="mt-1 text-xs text-slate-400">Automated evidence collection</div>
+                            </div>
+                            <div>
+                                <div class="text-xs font-mono text-slate-400 uppercase">Exposure Surface Reduction</div>
+                                <div id="roi-risk" class="mt-1 font-display font-extrabold text-3xl sm:text-4xl text-white">
+                                    88.5%
+                                </div>
+                                <div class="mt-1 text-xs text-slate-400">Mean-time-to-remediate &lt; 4m</div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div>
+                                <div class="text-xs font-mono text-slate-400 uppercase">Estimated Annual OpEx Savings</div>
+                                <div id="roi-savings" class="font-display font-bold text-2xl text-[#00B894] mt-0.5">$266,800</div>
+                            </div>
+                            <button onclick="openAuditModal('Custom ROI & Audit Readiness Assessment')" class="w-full sm:w-auto min-h-[44px] px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#0066CC] to-[#00B894] text-white text-xs font-semibold hover:opacity-95 transition-opacity">
+                                Lock In Assessment
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MINIMALIST CORPORATE LETTERHEAD FOOTER -->
+    <footer id="footer" class="bg-white border-t border-slate-200 text-[#0F172A]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 pb-10 sm:pb-12 border-b border-slate-200">
+                <!-- Brand & Corporate Metadata -->
+                <div class="sm:col-span-2 lg:col-span-1 space-y-3.5">
+                    <a href="#" class="inline-block font-display font-extrabold text-3xl tracking-tight bg-gradient-to-r from-[#0066CC] to-[#00B894] bg-clip-text text-transparent">
+                        MbisX
+                    </a>
+                    <p class="font-mono text-xs uppercase tracking-wider text-slate-600 leading-relaxed">
+                        ENTERPRISE DATA GOVERNANCE, CYBERSECURITY AUDITING, HYBRID ENDPOINT TELEMETRY, AND SPECIALIZED ENGINEERING SOLUTIONS.
+                    </p>
+                    <div class="pt-1 font-mono text-[11px] uppercase tracking-wider text-slate-500 space-y-1">
+                        <div>GLOBAL OPS: NEW YORK • ZURICH • SINGAPORE</div>
+                        <div>SOC COMMAND: 24/7/365 ZERO-TRUST</div>
+                    </div>
+                </div>
+
+                <!-- Platform Links -->
+                <div class="space-y-3">
+                    <h4 class="font-mono text-xs font-bold uppercase tracking-widest text-[#0F172A]">PLATFORM</h4>
+                    <ul class="space-y-1 text-xs font-mono uppercase tracking-wider text-slate-600">
+                        <li><a href="#solutions" class="inline-flex items-center min-h-[36px] hover:text-[#0066CC] transition-colors">DATA GOVERNANCE</a></li>
+                        <li><a href="#solutions" class="inline-flex items-center min-h-[36px] hover:text-[#0066CC] transition-colors">IT SECURITY AUDITS</a></li>
+                        <li><a href="#architecture" class="inline-flex items-center min-h-[36px] hover:text-[#0066CC] transition-colors">HYBRID TELEMETRY</a></li>
+                        <li><a href="#solutions" class="inline-flex items-center min-h-[36px] hover:text-[#0066CC] transition-colors">WORKFORCE SQUADS</a></li>
+                    </ul>
+                </div>
+
+                <!-- Compliance & Governance -->
+                <div class="space-y-3">
+                    <h4 class="font-mono text-xs font-bold uppercase tracking-widest text-[#0F172A]">GOVERNANCE</h4>
+                    <ul class="space-y-1 text-xs font-mono uppercase tracking-wider text-slate-600">
+                        <li><a href="#estimator" class="inline-flex items-center min-h-[36px] hover:text-[#0066CC] transition-colors">SOC 2 TYPE II</a></li>
+                        <li><a href="#estimator" class="inline-flex items-center min-h-[36px] hover:text-[#0066CC] transition-colors">ISO 27001:2022</a></li>
+                        <li><a href="#architecture" class="inline-flex items-center min-h-[36px] hover:text-[#0066CC] transition-colors">TRUST CENTER</a></li>
+                        <li><button onclick="openAuditModal('Security Whitepaper Request')" class="inline-flex items-center min-h-[36px] uppercase hover:text-[#0066CC] transition-colors text-left">VULNERABILITY POLICY</button></li>
+                    </ul>
+                </div>
+
+                <!-- Direct Contact -->
+                <div class="space-y-3">
+                    <h4 class="font-mono text-xs font-bold uppercase tracking-widest text-[#0F172A]">ENTERPRISE INQUIRIES</h4>
+                    <p class="font-mono text-xs uppercase tracking-wider text-slate-600 leading-relaxed">
+                        DIRECT ARCHITECT DESK:<br>
+                        <span class="text-[#0066CC] font-semibold">ENTERPRISE@MBISX.IO</span>
+                    </p>
+                    <button onclick="openAuditModal('Executive Consultation')" class="mt-2 w-full sm:w-auto inline-flex items-center justify-center min-h-[44px] px-4 py-2.5 rounded-xl border border-slate-300 hover:border-[#0066CC] font-mono text-xs font-semibold uppercase tracking-wider text-[#0F172A] transition-colors">
+                        INITIATE AUDIT BRIEFING →
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bottom Legal Row -->
+            <div class="pt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 font-mono text-[11px] uppercase tracking-widest text-slate-500">
+                <div>© 2026 MBISX TECHNOLOGIES INC. ALL RIGHTS RESERVED.</div>
+                <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
+                    <a href="#footer" class="min-h-[36px] inline-flex items-center hover:text-[#0F172A]">PRIVACY NOTICE</a>
+                    <a href="#footer" class="min-h-[36px] inline-flex items-center hover:text-[#0F172A]">MASTER SUBSCRIPTION AGREEMENT</a>
+                    <a href="#footer" class="min-h-[36px] inline-flex items-center hover:text-[#0F172A]">DATA PROCESSING ADDENDUM</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- RESPONSIVE MOBILE BOTTOM-SHEET / TABLET & DESKTOP MODAL -->
+    <div id="audit-modal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/70 backdrop-blur-xs">
+        <div class="bg-white rounded-t-2xl sm:rounded-2xl border border-slate-200 max-w-lg w-full max-h-[92vh] overflow-y-auto shadow-2xl">
+            <div class="sticky top-0 z-10 bg-[#0F172A] px-5 sm:px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <span class="font-display font-extrabold text-xl bg-gradient-to-r from-[#0066CC] to-[#00B894] bg-clip-text text-transparent">MbisX</span>
+                    <span class="font-mono text-xs text-slate-400 uppercase">// Audit &amp; Demo Desk</span>
+                </div>
+                <button onclick="closeAuditModal()" class="min-w-[44px] min-h-[44px] flex items-center justify-center text-slate-300 hover:text-white rounded-xl hover:bg-slate-800" aria-label="Close Modal">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div id="modal-form-container" class="p-5 sm:p-8">
+                <h3 id="modal-context-title" class="font-display font-bold text-lg sm:text-xl text-[#0F172A]">
+                    Request Enterprise Audit / Demo
+                </h3>
+                <p class="mt-1.5 text-sm text-slate-600">
+                    Connect directly with a Principal Security Architect. Receive a tailored environment blueprint within 4 business hours.
+                </p>
+
+                <form id="audit-request-form" onsubmit="submitAuditForm(event)" class="mt-5 sm:mt-6 space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block font-mono text-xs uppercase text-slate-600 mb-1">Full Name *</label>
+                            <input type="text" required placeholder="Elena Vance" class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl border border-slate-300 text-base sm:text-sm focus:outline-none focus:border-[#0066CC]">
+                        </div>
+                        <div>
+                            <label class="block font-mono text-xs uppercase text-slate-600 mb-1">Work Email *</label>
+                            <input type="email" required placeholder="evance@enterprise.com" class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl border border-slate-300 text-base sm:text-sm focus:outline-none focus:border-[#0066CC]">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block font-mono text-xs uppercase text-slate-600 mb-1">Organization *</label>
+                            <input type="text" required placeholder="Global Financial Corp" class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl border border-slate-300 text-base sm:text-sm focus:outline-none focus:border-[#0066CC]">
+                        </div>
+                        <div>
+                            <label class="block font-mono text-xs uppercase text-slate-600 mb-1">Primary Focus</label>
+                            <select id="modal-focus-select" class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl border border-slate-300 text-base sm:text-sm bg-white focus:outline-none focus:border-[#0066CC]">
+                                <option>Enterprise Data Governance</option>
+                                <option>Cybersecurity &amp; IT Security Audit</option>
+                                <option>Hybrid Cloud / On-Prem Monitoring</option>
+                                <option>Workforce &amp; Engineering Solutions</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block font-mono text-xs uppercase text-slate-600 mb-1">Infrastructure Scope / Notes</label>
+                        <textarea rows="3" placeholder="e.g., 12,000 hybrid endpoints, Snowflake governance, upcoming ISO 27001 audit..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-base sm:text-sm focus:outline-none focus:border-[#0066CC]"></textarea>
+                    </div>
+
+                    <div class="pt-2 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-3">
+                        <button type="button" onclick="closeAuditModal()" class="min-h-[44px] px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100">
+                            Cancel
+                        </button>
+                        <button type="submit" class="min-h-[48px] px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#0066CC] to-[#00B894] text-white text-sm font-semibold shadow-md hover:opacity-95">
+                            Dispatch Briefing Request
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Confirmation State (Hidden by default) -->
+            <div id="modal-success-container" class="hidden p-6 sm:p-8 text-center space-y-4">
+                <div class="w-14 h-14 rounded-2xl bg-teal-50 text-[#00B894] mx-auto flex items-center justify-center font-mono font-bold text-2xl border border-teal-200">
+                    ✓
+                </div>
+                <h4 class="font-display font-bold text-xl text-[#0F172A]">Briefing Ticket Provisioned</h4>
+                <p class="text-sm text-slate-600 max-w-sm mx-auto">
+                    Your architectural consultation request has been encrypted and routed to the MbisX Principal Engineering Desk.
+                </p>
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 font-mono text-xs text-slate-700">
+                    REFERENCE ID: <span id="ticket-ref-id" class="font-bold text-[#0066CC]">MBX-8841-SEC</span>
+                </div>
+                <button onclick="closeAuditModal()" class="w-full sm:w-auto min-h-[48px] mt-2 px-6 py-2.5 rounded-xl bg-[#0F172A] text-white text-sm font-semibold">
+                    Return to MbisX Platform
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vanilla JavaScript for Interactivity -->
+    <script>
+        // 1. Mobile & iPad Drawer Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIconOpen = document.getElementById('menu-icon-open');
+        const menuIconClose = document.getElementById('menu-icon-close');
+
+        function closeMobileMenu() {
+            mobileMenu.classList.add('hidden');
+            menuIconOpen.classList.remove('hidden');
+            menuIconClose.classList.add('hidden');
+            mobileMenuBtn.setAttribute('aria-expanded', 'false');
+        }
+
+        mobileMenuBtn.addEventListener('click', () => {
+            const isHidden = mobileMenu.classList.contains('hidden');
+            if (isHidden) {
+                mobileMenu.classList.remove('hidden');
+                menuIconOpen.classList.add('hidden');
+                menuIconClose.classList.remove('hidden');
+                mobileMenuBtn.setAttribute('aria-expanded', 'true');
+            } else {
+                closeMobileMenu();
+            }
+        });
+
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', closeMobileMenu);
+        });
+
+        // 2. Live Telemetry Stream Simulation
+        const telemetryMessages = [
+            { tag: '[PASS]', color: 'text-[#00B894]', text: 'Zero-Trust Policy Enforced: AWS RDS Prod-04', latency: '9ms' },
+            { tag: '[PASS]', color: 'text-[#00B894]', text: 'On-Premises Oracle Exadata Checksum Verified', latency: '14ms' },
+            { tag: '[SYNC]', color: 'text-sky-400', text: 'SOC2 Control CC6.1 Continuous Snapshot Sealed', latency: '11ms' },
+            { tag: '[PASS]', color: 'text-[#00B894]', text: 'Egress Anomaly Scan: 0 Unauthorized Flows', latency: '7ms' },
+            { tag: '[INFO]', color: 'text-amber-400', text: 'Auto-Masked 14,200 PII Fields in Staging Lake', latency: '16ms' }
+        ];
+
+        function triggerSimulatedAudit() {
+            const logContainer = document.getElementById('telemetry-log');
+            const msg = telemetryMessages[Math.floor(Math.random() * telemetryMessages.length)];
+            const entry = document.createElement('div');
+            entry.className = 'flex items-start justify-between gap-2 border-b border-slate-800 pb-2';
+            entry.innerHTML = `
+                <span class="${msg.color} shrink-0">${msg.tag}</span>
+                <span class="flex-1 text-slate-200 break-words">${msg.text}</span>
+                <span class="text-slate-500 shrink-0">${msg.latency}</span>
+            `;
+            logContainer.prepend(entry);
+            if (logContainer.children.length > 6) {
+                logContainer.removeChild(logContainer.lastChild);
+            }
+
+            // Slightly increment monitored endpoints counter
+            const epEl = document.getElementById('metric-endpoints');
+            const current = parseInt(epEl.textContent.replace(/,/g, ''), 10);
+            epEl.textContent = (current + Math.floor(Math.random() * 5 + 1)).toLocaleString();
+        }
+
+        setInterval(triggerSimulatedAudit, 4200);
+
+        // 3. Solutions / Capabilities Tab Switcher
+        const solutionsData = [
+            {
+                badge: 'PILLAR 01 // DATA GOVERNANCE',
+                title: 'Autonomous Enterprise Data Governance & Lineage',
+                desc: 'Eliminate shadow data and manual cataloging. MbisX continuously maps column-level lineage across cloud warehouses and on-premises databases, enforcing dynamic attribute-based access control (ABAC) at query runtime.',
+                bullets: [
+                    'Automated PII, PHI, and PCI discovery with 99.7% precision',
+                    'Real-time policy-as-code enforcement across Snowflake, Databricks, and PostgreSQL',
+                    'Immutable data provenance ledger for regulatory and AI model governance'
+                ],
+                metricLabel: 'POLICY ENFORCEMENT LATENCY',
+                metricValue: '< 2.4ms Overhead',
+                ctaText: 'Request Data Governance Demo'
+            },
+            {
+                badge: 'PILLAR 02 // SECURITY & AUDITS',
+                title: 'Continuous Cybersecurity & IT Security Audits',
+                desc: 'Replace disruptive annual audit fire-drills with real-time cryptographic compliance verification. MbisX continuously tests infrastructure configurations against SOC 2, ISO 27001, HIPAA, and NIST 800-53 controls.',
+                bullets: [
+                    'Automated evidence collection with tamper-evident SHA-256 attestations',
+                    'Real-time privilege escalation and misconfiguration drift remediation',
+                    'Auditor-ready compliance portals with instant control mapping'
+                ],
+                metricLabel: 'AUDIT PREPARATION REDUCTION',
+                metricValue: '82% Faster Certification',
+                ctaText: 'Schedule Security Audit Briefing'
+            },
+            {
+                badge: 'PILLAR 03 // HYBRID OBSERVABILITY',
+                title: 'Unified Hybrid Cloud & On-Premises Endpoint Monitoring',
+                desc: 'Achieve deterministic visibility across air-gapped data centers, bare-metal Linux/Windows servers, and multi-cloud Kubernetes clusters using our ultra-lightweight eBPF kernel telemetry agent.',
+                bullets: [
+                    'Sub-second process, network socket, and database query telemetry',
+                    'Zero-dependency binary supporting air-gapped and sovereign cloud deployments',
+                    'Automated anomaly isolation without disrupting production workloads'
+                ],
+                metricLabel: 'AGENT RESOURCE FOOTPRINT',
+                metricValue: '< 0.6% CPU / 38MB RAM',
+                ctaText: 'Deploy Hybrid Telemetry POC'
+            },
+            {
+                badge: 'PILLAR 04 // WORKFORCE SOLUTIONS',
+                title: 'Enterprise Workforce & Principal Engineering Solutions',
+                desc: 'Accelerate complex digital transformation and compliance remediation with vetted, security-cleared systems architects, DevSecOps engineers, and data governance specialists.',
+                bullets: [
+                    'Dedicated pods of senior security, cloud, and data platform engineers',
+                    'Turnkey legacy-to-hybrid migration and zero-trust architecture delivery',
+                    'Flexible enterprise engagement models with strict SLA guarantees'
+                ],
+                metricLabel: 'AVERAGE ENGINEER TENURE',
+                metricValue: '11+ Years Enterprise Exp.',
+                ctaText: 'Consult Workforce Practice'
+            }
+        ];
+
+        function selectSolutionTab(index) {
+            // Update tab button styles
+            document.querySelectorAll('.sol-tab').forEach((btn, idx) => {
+                if (idx === index) {
+                    btn.className = 'sol-tab min-h-[44px] px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-[#0F172A] text-white shadow-xs whitespace-nowrap';
+                } else {
+                    btn.className = 'sol-tab min-h-[44px] px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200 whitespace-nowrap';
+                }
+            });
+
+            const item = solutionsData[index];
+            const spotlight = document.getElementById('solution-spotlight');
+            spotlight.innerHTML = `
+                <div class="lg:col-span-8 space-y-4">
+                    <span class="font-mono text-xs font-semibold text-[#0066CC] tracking-wider">${item.badge}</span>
+                    <h3 class="font-display font-bold text-xl sm:text-2xl md:text-3xl text-[#0F172A]">${item.title}</h3>
+                    <p class="text-slate-600 text-sm sm:text-base leading-relaxed">${item.desc}</p>
+                    <ul class="pt-2 space-y-2.5">
+                        ${item.bullets.map(b => `
+                            <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                                <span class="text-[#00B894] font-bold mt-0.5 shrink-0">✓</span>
+                                <span>${b}</span>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+                <div class="lg:col-span-4 bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 space-y-5 shadow-xs">
+                    <div>
+                        <div class="font-mono text-[11px] uppercase tracking-wider text-slate-500">${item.metricLabel}</div>
+                        <div class="mt-1 font-display font-extrabold text-xl sm:text-2xl bg-gradient-to-r from-[#0066CC] to-[#00B894] bg-clip-text text-transparent">
+                            ${item.metricValue}
+                        </div>
+                    </div>
+                    <div class="pt-4 border-t border-slate-100">
+                        <button onclick="openAuditModal('${item.title}')" class="w-full min-h-[48px] py-3 px-4 rounded-xl bg-[#0F172A] hover:bg-slate-800 text-white text-sm font-semibold transition-colors">
+                            ${item.ctaText}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Initialize first solution tab
+        selectSolutionTab(0);
+
+        // 4. Interactive Architecture & Security Posture Explorer
+        const archLayers = {
+            hybrid: {
+                diagramTitle: 'TOPOLOGY: MULTI-CLOUD & KUBERNETES MESH',
+                throughput: '1.4M events/sec • 0% packet loss',
+                heading: 'Hybrid Cloud Telemetry & Control',
+                desc: 'Seamless cross-account visibility across AWS, Azure, and GCP workloads without exposing internal VPCs to public ingress.',
+                latency: '1.8 ms',
+                cpu: '< 0.6%',
+                score: '100/100',
+                nodes: [
+                    { title: 'AWS / GCP VPCs', sub: 'eBPF DaemonSets', status: 'ACTIVE' },
+                    { title: 'MbisX Relay Mesh', sub: 'mTLS 1.3 Tunnel', status: 'ENCRYPTED' },
+                    { title: 'Governance Engine', sub: 'Real-Time Policy', status: 'ENFORCED' }
+                ],
+                checks: [
+                    'Cross-cloud IAM & service-account privilege graph verified',
+                    'Automated S3 / Blob storage public-exposure blocking',
+                    'Kubernetes runtime syscall anomaly detection active'
+                ]
+            },
+            onprem: {
+                diagramTitle: 'TOPOLOGY: SOVEREIGN DATA CENTER & BARE METAL',
+                throughput: '920K events/sec • Air-Gap Compatible',
+                heading: 'On-Premises & Air-Gapped Infrastructure',
+                desc: 'Purpose-built local collector nodes process sensitive telemetry inside sovereign perimeters with optional diode-based ledger synchronization.',
+                latency: '0.9 ms',
+                cpu: '< 0.4%',
+                score: '100/100',
+                nodes: [
+                    { title: 'Bare-Metal / VMware', sub: 'RHEL & Windows', status: 'HARDENED' },
+                    { title: 'Local Collector Core', sub: 'On-Prem Appliance', status: 'ISOLATED' },
+                    { title: 'Database Clusters', sub: 'Oracle / SQL / PG', status: 'AUDITED' }
+                ],
+                checks: [
+                    'Hardware TPM 2.0 attestation & kernel module integrity',
+                    'Zero external internet egress required for policy execution',
+                    'Full database query audit trail without proxy bottlenecks'
+                ]
+            },
+            zerotrust: {
+                diagramTitle: 'TOPOLOGY: IDENTITY-CENTRIC ZERO-TRUST PLANE',
+                throughput: '48,000 policy evals/sec • Cryptographic Sign-off',
+                heading: 'Zero-Trust Data & Identity Governance',
+                desc: 'Every data query and endpoint session is continuously evaluated against cryptographic identity, device posture, and data classification.',
+                latency: '2.1 ms',
+                cpu: '< 0.5%',
+                score: '100/100',
+                nodes: [
+                    { title: 'Identity Provider', sub: 'Okta / Entra / OIDC', status: 'VERIFIED' },
+                    { title: 'Policy Decision Point', sub: 'Dynamic ABAC Rules', status: 'ZERO-TRUST' },
+                    { title: 'Sensitive Data Tier', sub: 'Column-Level Masking', status: 'PROTECTED' }
+                ],
+                checks: [
+                    'Just-in-time ephemeral credentials with 15-minute TTL',
+                    'Automatic PII redaction for non-privileged analyst roles',
+                    'Immutable WORM audit trail exported to SIEM / GRC'
+                ]
+            }
+        };
+
+        function setArchLayer(layerKey) {
+            document.querySelectorAll('.arch-btn').forEach(btn => {
+                btn.className = 'arch-btn min-h-[44px] px-4 py-2.5 rounded-lg text-xs font-mono font-semibold uppercase transition-all text-slate-300 hover:text-white';
+            });
+            const activeBtn = document.getElementById(`arch-btn-${layerKey}`);
+            activeBtn.className = 'arch-btn min-h-[44px] px-4 py-2.5 rounded-lg text-xs font-mono font-semibold uppercase transition-all bg-gradient-to-r from-[#0066CC] to-[#00B894] text-white shadow-sm';
+
+            const data = archLayers[layerKey];
+            document.getElementById('arch-diagram-title').textContent = data.diagramTitle;
+            document.getElementById('arch-throughput').textContent = data.throughput;
+            document.getElementById('arch-inspector-heading').textContent = data.heading;
+            document.getElementById('arch-inspector-desc').textContent = data.desc;
+            document.getElementById('arch-stat-latency').textContent = data.latency;
+            document.getElementById('arch-stat-cpu').textContent = data.cpu;
+            document.getElementById('arch-stat-score').textContent = data.score;
+
+            document.getElementById('arch-nodes-container').innerHTML = data.nodes.map((n, i) => `
+                <div class="p-4 rounded-xl bg-slate-950 border border-slate-700/80 text-center space-y-1.5 relative">
+                    <span class="inline-block font-mono text-[10px] px-2 py-0.5 rounded bg-[#00B894]/15 text-[#00B894]">${n.status}</span>
+                    <div class="font-display font-bold text-sm text-white">${n.title}</div>
+                    <div class="font-mono text-xs text-slate-400">${n.sub}</div>
+                </div>
+            `).join('');
+
+            document.getElementById('arch-checks-list').innerHTML = data.checks.map(chk => `
+                <div class="flex items-start gap-2.5 text-xs text-slate-300 bg-slate-950/70 p-3 rounded-xl border border-slate-800/80">
+                    <span class="text-[#00B894] font-mono font-bold">[OK]</span>
+                    <span>${chk}</span>
+                </div>
+            `).join('');
+        }
+
+        // Initialize Architecture Explorer
+        setArchLayer('hybrid');
+
+        // 5. Security Audit Readiness & ROI Estimator
+        const endpointSlider = document.getElementById('endpoint-slider');
+        let roiEnvMultiplier = 1.0;
+        endpointSlider.addEventListener('input', calculateROI);
+
+        function setRoiEnv(mult, btnEl) {
+            roiEnvMultiplier = mult;
+            document.querySelectorAll('.roi-env-btn').forEach(b => {
+                b.className = 'roi-env-btn min-h-[44px] px-2.5 py-2 rounded-xl border border-slate-200 bg-white text-slate-700 font-mono text-xs font-semibold hover:border-slate-300';
+            });
+            btnEl.className = 'roi-env-btn min-h-[44px] px-2.5 py-2 rounded-xl border border-[#0066CC] bg-blue-50 text-[#0066CC] font-mono text-xs font-semibold';
+            calculateROI();
+        }
+
+        function calculateROI() {
+            const endpoints = parseInt(endpointSlider.value, 10);
+            document.getElementById('endpoint-count-display').textContent = `${endpoints.toLocaleString()} Nodes`;
+
+            let multiplier = roiEnvMultiplier;
+            let checkedCount = 0;
+            document.querySelectorAll('.framework-cb:checked').forEach(cb => {
+                multiplier += (parseFloat(cb.value) - 1.0);
+                checkedCount++;
+            });
+
+            // Deterministic enterprise savings model
+            const baseHours = 640 + (endpoints * 0.14);
+            const totalHours = Math.round(baseHours * multiplier);
+            const riskReduction = Math.min(96.4, (78 + (checkedCount * 2.8) + (endpoints / 12000))).toFixed(1);
+            const opExSavings = Math.round(totalHours * 145);
+
+            document.getElementById('roi-hours').textContent = `${totalHours.toLocaleString()} hrs/yr`;
+            document.getElementById('roi-risk').textContent = `${riskReduction}%`;
+            document.getElementById('roi-savings').textContent = `$${opExSavings.toLocaleString()}`;
+        }
+
+        calculateROI();
+
+        // 6. Consultation / Audit Modal Handlers
+        const auditModal = document.getElementById('audit-modal');
+        const formContainer = document.getElementById('modal-form-container');
+        const successContainer = document.getElementById('modal-success-container');
+
+        function openAuditModal(contextTitle) {
+            document.getElementById('modal-context-title').textContent = contextTitle || 'Request Enterprise Audit / Demo';
+            formContainer.classList.remove('hidden');
+            successContainer.classList.add('hidden');
+            auditModal.classList.remove('hidden');
+            auditModal.classList.add('flex');
+        }
+
+        function closeAuditModal() {
+            auditModal.classList.add('hidden');
+            auditModal.classList.remove('flex');
+        }
+
+        function submitAuditForm(event) {
+            event.preventDefault();
+            const randomId = Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('ticket-ref-id').textContent = `MBX-${randomId}-ENT`;
+            formContainer.classList.add('hidden');
+            successContainer.classList.remove('hidden');
+        }
+
+        // Close modal on backdrop click
+        auditModal.addEventListener('click', (e) => {
+            if (e.target === auditModal) {
+                closeAuditModal();
+            }
+        });
+    </script>
+</body>
+</html>
